@@ -34,9 +34,9 @@ app.add_handler(MessageHandler(filters.ALL, messageHandler))
 async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
 
     buy = requests.get(
-        f"{domain}/api/p2p?type=buy&asset=usdt&fiat=vnd")
+        f"{domain}/api/p2p?type=buy&asset=usdt&fiat=vnd&page=1")
     sell = requests.get(
-        f"{domain}/api/p2p?type=sell&asset=usdt&fiat=vnd")
+        f"{domain}/api/p2p?type=sell&asset=usdt&fiat=vnd&page=1")
 
     krw_res = requests.get(
         f"{domain}/api/rate/bank")
@@ -48,11 +48,10 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
 
     message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>\n\n<b>KRW</b>\nBán: <b>{krw['sell']} VND</b>\nMua: <b>{krw['buy']} VND</b>\n\n<b>Liên hệ:</b>\nTelegram: @business1221\nSĐT: 094.797.8888\nXem tỷ giá miễn phí tại: https://chootc.com"
 
-    res = requests.get(
-        f"{domain}/api/setup")
-    last_msg_id = res.json()[0]["value"]
-
     try:
+        res = requests.get(f"{domain}/api/setup")
+        last_msg_id = res.json()[0]["value"]
+        
         await context.bot.delete_message(message_id=last_msg_id, chat_id='-1001871429218')
         msg = await context.bot.send_message(chat_id='-1001871429218', text=message, parse_mode=constants.ParseMode.HTML)
 
