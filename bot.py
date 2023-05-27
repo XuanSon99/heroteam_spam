@@ -9,7 +9,7 @@ import random
 kyc = "👨‍💻 Xác minh KYC"
 uytin = "💎 DS Uy tín"
 
-domain = "https://chootc.com"
+domain = "https://api.chootc.com"
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
