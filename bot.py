@@ -9,7 +9,7 @@ import random
 kyc = "👨‍💻 Xác minh KYC"
 uytin = "💎 DS Uy tín"
 
-domain = "https://chootc.com"
+domain = "https://api.chootc.com"
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -38,15 +38,17 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
     sell = requests.get(
         f"{domain}/api/p2p?type=sell&asset=usdt&fiat=vnd&page=1")
 
-    krw_res = requests.get(
-        f"{domain}/api/rate/bank")
+    # krw_res = requests.get(
+    #     f"{domain}/api/rate/bank")
 
     buy_price = buy.json()['data'][4]['adv']['price']
     sell_price = sell.json()['data'][4]['adv']['price']
 
-    krw = krw_res.json()[10]
+    # krw = krw_res.json()[10]
 
-    message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>\n\n<b>KRW</b>\nBán: <b>{krw['sell']} VND</b>\nMua: <b>{krw['buy']} VND</b>\n\nXem tỷ giá miễn phí tại:\nhttps://chootc.com"
+    # message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>\n\n<b>KRW</b>\nBán: <b>{krw['sell']} VND</b>\nMua: <b>{krw['buy']} VND</b>\n\n<b>Liên hệ:</b>\nTelegram: @business1221\nSĐT: 094.797.8888\nXem tỷ giá miễn phí tại: https://chootc.com"
+
+    message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>\n\nXem tỷ giá miễn phí tại:\nhttps://chootc.com"
 
     try:
         res = requests.get(f"{domain}/api/setup")
