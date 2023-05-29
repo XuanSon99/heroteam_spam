@@ -46,19 +46,19 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
 
     krw = krw_res.json()[10]
 
-    message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>\n\n<b>KRW</b>\nBán: <b>{krw['sell']} VND</b>\nMua: <b>{krw['buy']} VND</b>\n\n<b>Liên hệ:</b>\nTelegram: @business1221\nSĐT: 094.797.8888\nXem tỷ giá miễn phí tại: https://chootc.com"
+    message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>\n\n<b>KRW</b>\nBán: <b>{krw['sell']} VND</b>\nMua: <b>{krw['buy']} VND</b>\n\nXem tỷ giá miễn phí tại:\nhttps://chootc.com"
 
     try:
         res = requests.get(f"{domain}/api/setup")
         last_msg_id = res.json()[0]["value"]
         
         await context.bot.delete_message(message_id=last_msg_id, chat_id='-1001871429218')
-        msg = await context.bot.send_message(chat_id='-1001871429218', text=message, parse_mode=constants.ParseMode.HTML)
+        msg = await context.bot.send_message(chat_id='-1001871429218', text=message, parse_mode=constants.ParseMode.HTML, link_preview=False)
 
         requests.put(
         f"{domain}/api/setup/1", {'value': msg.message_id})
     except:
-        msg = await context.bot.send_message(chat_id='-1001871429218', text=message, parse_mode=constants.ParseMode.HTML)
+        msg = await context.bot.send_message(chat_id='-1001871429218', text=message, parse_mode=constants.ParseMode.HTML, link_preview=False)
         
         requests.put(
         f"{domain}/api/setup/1", {'value': msg.message_id})
