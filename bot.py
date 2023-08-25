@@ -23,6 +23,8 @@ async def messageHandler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     username = update.effective_user.username
     chat_id = update.effective_chat.id
 
+    print(chat_id)
+
 app = ApplicationBuilder().token(
     "6274365100:AAGi5Mh9fKUNfdOzKUCIH7gauVWfn2Dvy-Y").build()
 
@@ -53,17 +55,26 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
     try:
         res = requests.get(f"{domain}/api/setup")
         last_msg_id = res.json()[1]["value"]
+        last_msg_id_2 = res.json()[2]["value"]
         
         await context.bot.delete_message(message_id=last_msg_id, chat_id='-1001871429218')
         msg = await context.bot.send_message(chat_id='-1001871429218', text=message, parse_mode=constants.ParseMode.HTML, disable_web_page_preview=True)
 
+        await context.bot.delete_message(message_id=last_msg_id_2, chat_id='-1001268866412')
+        msg = await context.bot.send_message(chat_id='-1001268866412', text=message, parse_mode=constants.ParseMode.HTML, disable_web_page_preview=True)
+
         requests.put(
         f"{domain}/api/setup/1", {'value': msg.message_id})
+        requests.put(
+        f"{domain}/api/setup/2", {'value': msg.message_id})
     except:
         msg = await context.bot.send_message(chat_id='-1001871429218', text=message, parse_mode=constants.ParseMode.HTML, disable_web_page_preview=True)
-        
         requests.put(
         f"{domain}/api/setup/1", {'value': msg.message_id})
+
+        msg = await context.bot.send_message(chat_id='-1001268866412', text=message, parse_mode=constants.ParseMode.HTML, disable_web_page_preview=True)
+        requests.put(
+        f"{domain}/api/setup/2", {'value': msg.message_id})
 
     # await context.bot.delete_message(message_id=last_msg_id, chat_id='-926818356')
     # msg = await context.bot.send_message(chat_id='-926818356', text=message, parse_mode=constants.ParseMode.HTML)
