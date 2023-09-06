@@ -50,7 +50,7 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
 
     # message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>\n\n<b>KRW</b>\nBán: <b>{krw['sell']} VND</b>\nMua: <b>{krw['buy']} VND</b>\n\n<b>Liên hệ:</b>\nTelegram: @business1221\nSĐT: 094.797.8888\nXem tỷ giá miễn phí tại: https://chootc.com"
 
-    message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>\n\nXem tỷ giá miễn phí tại:\nhttps://chootc.com"
+    message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>\n\nMua bán ngay tại:\nhttps://exchange.chootc.com"
 
     try:
         res = requests.get(f"{domain}/api/setup")
