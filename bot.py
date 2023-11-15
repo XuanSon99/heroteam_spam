@@ -6,16 +6,10 @@ from types import SimpleNamespace
 import math
 import random
 
-kyc = "👨‍💻 Xác minh KYC"
-uytin = "💎 DS Uy tín"
-
 domain = "https://api.chootc.com"
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    buttons = [[KeyboardButton(kyc), KeyboardButton(uytin)]]
-
-    reply_markup = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Chào mừng bạn đến với <b>Hero Team</b>",
