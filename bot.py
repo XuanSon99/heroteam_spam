@@ -5,9 +5,9 @@ import json
 from types import SimpleNamespace
 import math
 import random
+import time
 
 domain = "https://api.chootc.com"
-
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await context.bot.send_message(
@@ -16,11 +16,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         parse_mode=constants.ParseMode.HTML,
     )
 
-
 async def messageHandler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     username = update.effective_user.username
     chat_id = update.effective_chat.id
-
     print(chat_id)
 
 
@@ -34,86 +32,68 @@ app.add_handler(MessageHandler(filters.ALL, messageHandler))
 
 # auto send message
 async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
-    buy = requests.get(f"{domain}/api/p2p?type=buy&asset=usdt&fiat=vnd&page=1")
-    sell = requests.get(f"{domain}/api/p2p?type=sell&asset=usdt&fiat=vnd&page=1")
-
-    # krw_res = requests.get(
-    #     f"{domain}/api/rate/bank")
-
-    buy_price = buy.json()["data"][4]["adv"]["price"]
-    sell_price = sell.json()["data"][4]["adv"]["price"]
-
-    # krw = krw_res.json()[10]
-
-    # message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>\n\n<b>KRW</b>\nBán: <b>{krw['sell']} VND</b>\nMua: <b>{krw['buy']} VND</b>\n\n<b>Liên hệ:</b>\nTelegram: @business1221\nSĐT: 094.797.8888\nXem tỷ giá miễn phí tại: https://chootc.com"
-
     reply_markup = InlineKeyboardMarkup(
         [
             [
                 InlineKeyboardButton(text="Xem tỷ giá", url="https://chootc.com"),
-                InlineKeyboardButton(text="Mua bán USDT", url="https://exchange.chootc.com"),
+                InlineKeyboardButton(
+                    text="Mua bán USDT", url="https://exchange.chootc.com"
+                ),
             ]
         ]
     )
 
-    message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>"
+    buy = requests.get(f"{domain}/api/p2p?type=buy&asset=usdt&fiat=vnd&page=1")
+    sell = requests.get(f"{domain}/api/p2p?type=sell&asset=usdt&fiat=vnd&page=1")
 
-    try:
-        baogia1 = requests.get(f"{domain}/api/setup/baogia1")
-        baogia2 = requests.get(f"{domain}/api/setup/baogia2")
+    buy_price = buy.json()["data"][19]["adv"]["price"]
+    sell_price = sell.json()["data"][19]["adv"]["price"]
 
-        last_msg_id = baogia1.json()["value"]
-        last_msg_id_2 = baogia2.json()["value"]
+    message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>\n\nXem tỷ giá miễn phí tại:\nhttps://chootc.com"
 
-        await context.bot.delete_message(
-            message_id=last_msg_id, chat_id="-1001871429218"
-        )
-        msg = await context.bot.send_message(
-            chat_id="-1001871429218",
-            text=message,
-            parse_mode=constants.ParseMode.HTML,
-            reply_markup=reply_markup,
-            disable_web_page_preview=True,
-        )
+    with open("data.json", "r", encoding="utf-8") as f:
+        data = json.load(f)
 
-        await context.bot.delete_message(
-            message_id=last_msg_id_2, chat_id="-1001268866412"
-        )
-        msg_2 = await context.bot.send_message(
-            chat_id="-1001268866412",
-            text=message,
-            parse_mode=constants.ParseMode.HTML,
-            reply_markup=reply_markup,
-            disable_web_page_preview=True,
-        )
+    for item in data:
+        try:
+            if int(time.time()) - item['timestamp'] > 1800:
+                await context.bot.delete_message(
+                    message_id=item["msg_id"], chat_id=item["group_id"]
+                )
 
-        requests.put(f"{domain}/api/setup/baogia1", {"value": msg.message_id})
-        requests.put(f"{domain}/api/setup/baogia2", {"value": msg_2.message_id})
-    except:
-        msg = await context.bot.send_message(
-            chat_id="-1001871429218",
-            text=message,
-            parse_mode=constants.ParseMode.HTML,
-            reply_markup=reply_markup,
-            disable_web_page_preview=True,
-        )
-        requests.put(f"{domain}/api/setup/baogia1", {"value": msg.message_id})
+                msg = await context.bot.send_message(
+                    chat_id=item["group_id"],
+                    text=message,
+                    reply_markup=reply_markup,
+                    parse_mode=constants.ParseMode.HTML,
+                    disable_web_page_preview=True,
+                )
 
-        msg_2 = await context.bot.send_message(
-            chat_id="-1001268866412",
-            text=message,
-            parse_mode=constants.ParseMode.HTML,
-            reply_markup=reply_markup,
-            disable_web_page_preview=True,
-        )
-        requests.put(f"{domain}/api/setup/baogia2", {"value": msg_2.message_id})
+                item["msg_id"] = msg.message_id
+                with open("data.json", "w", encoding="utf-8") as f:
+                    json.dump(data, f, indent=2)
+            else:
+                await context.bot.edit_message_text(chat_id=item["group_id"], message_id=item["msg_id"], text=message, parse_mode=constants.ParseMode.HTML)
 
-    # await context.bot.delete_message(message_id=last_msg_id, chat_id='-926818356')
-    # msg = await context.bot.send_message(chat_id='-926818356', text=message, parse_mode=constants.ParseMode.HTML)
+        except Exception as e:
+            if int(time.time()) - item['timestamp'] > 1800:
+                msg = await context.bot.send_message(
+                    chat_id=item["group_id"],
+                    text=message,
+                    reply_markup=reply_markup,
+                    parse_mode=constants.ParseMode.HTML,
+                    disable_web_page_preview=True,
+                )
+
+                item["msg_id"] = msg.message_id
+                with open("data.json", "w", encoding="utf-8") as f:
+                    json.dump(data, f, indent=2)
+            else:
+                await context.bot.edit_message_text(chat_id=item["group_id"], message_id=item["msg_id"], text=message, parse_mode=constants.ParseMode.HTML)
 
 
 job_queue = app.job_queue
 
-job_minute = job_queue.run_repeating(callback_minute, interval=3600, first=10)
+job_minute = job_queue.run_repeating(callback_minute, interval=1800, first=10)
 
 app.run_polling()
