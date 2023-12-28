@@ -70,6 +70,7 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
                 )
 
                 item["msg_id"] = msg.message_id
+                item["timestamp"] = int(time.time())
                 with open("data.json", "w", encoding="utf-8") as f:
                     json.dump(data, f, indent=2)
             else:
@@ -86,6 +87,7 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
                 )
 
                 item["msg_id"] = msg.message_id
+                item["timestamp"] = int(time.time())
                 with open("data.json", "w", encoding="utf-8") as f:
                     json.dump(data, f, indent=2)
             else:
