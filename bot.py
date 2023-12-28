@@ -49,7 +49,7 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
     buy_price = buy.json()["data"][19]["adv"]["price"]
     sell_price = sell.json()["data"][19]["adv"]["price"]
 
-    message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>\n\nXem tỷ giá miễn phí tại:\nhttps://chootc.com"
+    message = f"<b>USDT</b>\nBán: <b>{int(buy_price):,} VND</b>\nMua: <b>{int(sell_price):,} VND</b>"
 
     with open("data.json", "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -94,6 +94,6 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
 
 job_queue = app.job_queue
 
-job_minute = job_queue.run_repeating(callback_minute, interval=1800, first=10)
+job_minute = job_queue.run_repeating(callback_minute, interval=30, first=10)
 
 app.run_polling()
