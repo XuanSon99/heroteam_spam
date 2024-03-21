@@ -74,8 +74,7 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
                 with open("data.json", "w", encoding="utf-8") as f:
                     json.dump(data, f, indent=2)
             else:
-                await context.bot.edit_message_text(chat_id=item["group_id"], message_id=item["msg_id"], text=message, reply_markup=reply_markup,
-                    parse_mode=constants.ParseMode.HTML,
+                await context.bot.edit_message_text(chat_id=item["group_id"], message_id=item["msg_id"], text=message, parse_mode=constants.ParseMode.HTML,
                     disable_web_page_preview=True)
 
         except Exception as e:
