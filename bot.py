@@ -64,7 +64,6 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
                 msg = await context.bot.send_message(
                     chat_id=item["group_id"],
                     text=message,
-                    reply_markup=reply_markup,
                     parse_mode=constants.ParseMode.HTML,
                     disable_web_page_preview=True,
                 )
@@ -79,23 +78,21 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
 
         except Exception as e:
             print(e)
-            # if int(time.time()) - item['timestamp'] > 1800:
-            #     msg = await context.bot.send_message(
-            #         chat_id=item["group_id"],
-            #         text=message,
-            #         reply_markup=reply_markup,
-            #         parse_mode=constants.ParseMode.HTML,
-            #         disable_web_page_preview=True,
-            #     )
+            if int(time.time()) - item['timestamp'] > 1800:
+                msg = await context.bot.send_message(
+                    chat_id=item["group_id"],
+                    text=message,
+                    parse_mode=constants.ParseMode.HTML,
+                    disable_web_page_preview=True,
+                )
 
-            #     item["msg_id"] = msg.message_id
-            #     item["timestamp"] = int(time.time())
-            #     with open("data.json", "w", encoding="utf-8") as f:
-            #         json.dump(data, f, indent=2)
-            # else:
-            #     await context.bot.edit_message_text(chat_id=item["group_id"], message_id=item["msg_id"], text=message, reply_markup=reply_markup,
-            #         parse_mode=constants.ParseMode.HTML,
-            #         disable_web_page_preview=True)
+                item["msg_id"] = msg.message_id
+                item["timestamp"] = int(time.time())
+                with open("data.json", "w", encoding="utf-8") as f:
+                    json.dump(data, f, indent=2)
+            else:
+                await context.bot.edit_message_text(chat_id=item["group_id"], message_id=item["msg_id"], text=message, parse_mode=constants.ParseMode.HTML,
+                    disable_web_page_preview=True)
 
 
 job_queue = app.job_queue
