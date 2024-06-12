@@ -56,7 +56,7 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
 
     for item in data:
         try:
-            if int(time.time()) - item['timestamp'] > 1800:
+            if int(time.time()) - item['timestamp'] > 900:
                 await context.bot.delete_message(
                     message_id=item["msg_id"], chat_id=item["group_id"]
                 )
@@ -75,11 +75,11 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
                     json.dump(data, f, indent=2)
             else:
                 await context.bot.edit_message_text(chat_id=item["group_id"], message_id=item["msg_id"], text=message, parse_mode=constants.ParseMode.HTML,
-                    disable_web_page_preview=True)
+                    disable_web_page_preview=True, reply_markup=reply_markup )
 
         except Exception as e:
             print(e)
-            if int(time.time()) - item['timestamp'] > 1800:
+            if int(time.time()) - item['timestamp'] > 900:
                 msg = await context.bot.send_message(
                     chat_id=item["group_id"],
                     text=message,
@@ -94,7 +94,7 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
                     json.dump(data, f, indent=2)
             else:
                 await context.bot.edit_message_text(chat_id=item["group_id"], message_id=item["msg_id"], text=message, parse_mode=constants.ParseMode.HTML,
-                    disable_web_page_preview=True)
+                    disable_web_page_preview=True, reply_markup=reply_markup )
 
 
 job_queue = app.job_queue
