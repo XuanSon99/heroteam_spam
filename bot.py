@@ -66,6 +66,7 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
                     text=message,
                     parse_mode=constants.ParseMode.HTML,
                     disable_web_page_preview=True,
+                    reply_markup=reply_markup 
                 )
 
                 item["msg_id"] = msg.message_id
@@ -84,6 +85,7 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
                     text=message,
                     parse_mode=constants.ParseMode.HTML,
                     disable_web_page_preview=True,
+                    reply_markup=reply_markup 
                 )
 
                 item["msg_id"] = msg.message_id
